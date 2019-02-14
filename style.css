@@ -1,0 +1,264 @@
+* {
+    box-sizing: border-box;
+}
+
+/* FLUID SIZING ***************************************************************** */
+
+.fluid-sizing {
+    background: #cceeee;
+    height: 500px;
+    padding: 40px;
+}
+
+/* With fluid typography, all the relevant dimensions
+(such as font size, character spacing, and line height)
+resize smoothly as viewport size changes. */
+
+/* You could use viewport units to resize your font smoothly.
+
+The viewport is the visible part of your browser. There are 4 viewport units.
+vw: 100vw equals the full width of the viewport
+vh: 100vh equals the full height of the viewport
+vmax: vw or vh (whichever one is bigger)
+vmin: vw or vh (whichever one is smaller)
+*/
+
+/* We could make our font-size respond to the viewport width: */
+
+.resize-vw {
+    font-size: 3vw;
+}
+
+/* However, the problem with using viewport units is that,
+at very small viewport sizes, the font size will be tiny and unreadable.
+We will solve this problem with the method below. */
+
+/* Let's say our maximum constant font size is 40px, which looks looks like this: */
+
+.maximum {
+    font-size: 40px;
+}
+
+/* Let's say our minimum constant font size is 20px, which looks like this: */
+
+.minimum {
+    font-size: 20px;
+}
+
+/*  Furthermore, let's say that:
+- we want our font size to be the MAXIMUM constant in large screens (over 900px)
+- we want our font size to be the MINIMUM constant in small screens (under 600px)
+- we want our font size to transition FLUIDLY between the mininum and the maximum,
+WHEN the the screen size is transitioning between 600px and 900px.
+*/
+
+/* Let's say we're designing for desktop first,
+so our default font size is the maximum constant: */
+
+.fluid {
+    font-size: 40px;
+}
+
+/* Now let's make a media query for small screens (up to 600px)... */
+
+@media screen and (max-width: 600px) {
+
+    /* ...and assign the font size as the minimum constant. */
+
+    .fluid {
+        font-size: 20px;
+    }
+
+}
+
+/* Now let's make a media query for intermediate screens (between 600px and 900px)... */
+
+@media screen and (min-width: 600px) and (max-width: 900px) {
+
+    /* ...and use a linear equation so that the font size transitions smoothly.
+    
+    Let me first give you the general equation.
+    
+    Given that:
+    [F] = font size
+    [mF] = minimum font size
+    [MF] = Maximum font size
+    [mS] = minimum screen size
+    [MS] = Maximum font size
+                    
+    [F] = [mF]px + ([MF] - [mF]) * (100vw - [mS]px) / ([MS] - [ms])
+
+    Please note that px is in two places up there!
+
+    In order to make this work with CSS, we need to wrap it with a calc() function,
+    and plug in our values: */
+
+    .fluid {
+        font-size: calc(20px + (40 - 20) * (100vw - 600px) / (900 - 600));
+    }
+
+    /* You could of course simplify the above as:
+
+    font-size: calc(20px + 10 * (100vw - 600px) / 400);
+
+    ...but I don't recommend you do that if you're still playing around with
+    the font sizes and the screen size boundaries for your media queries. */
+}
+
+
+
+
+
+
+/* MODULAR SCALES **************************************************************** */
+
+.modular-scale {
+    background: #eeccea;
+    height: 500px;
+    padding: 40px; 
+}
+
+/* We use the relative sizes of our h1-h6, p, etc -elements to 
+establish a visual hierarchy and convey structure to the user */
+
+/* Let's say we're gonna use h1-, h2- and p-elements.
+We could decide their font size randomly, of course. And that makes sense sometimes.
+But if we use a modular scale everything might look more harmonic. */
+
+/* As mentioned earlier, we're designing for desktop first.
+So let's implement a modular scale for h1-, h2-, and p-elements.
+
+Let's first set the root font size. */
+
+html {
+    font-size: 26px;
+}
+
+/* We want our p elements to be the same size as the root.
+Since font size is automatically inherited, we don't need to
+explicitly set the p-element font size. */
+
+/* We want our h2-elements to be 1.5 times bigger than the p-elements.
+We'll do the math now instead of using rem... this will be relevant later.
+26 x 2 = 39px */
+
+h2 {
+    font-size: 39px;
+}
+
+/* And we want our h1-elements to be 1.5 times bigger than the h2-elements.
+39 x 1.5 = 58.5px */
+
+h1 {
+    font-size: 58.5px;
+}
+
+/* Great! We have implemented a modular scale that works well for large screens.
+However, on mobile we don't have as much room (especially in the horizontal direction)
+so the size difference between between the h1-, h2- and p-elements is too much.
+
+So let's create a media query for small screens.
+Let's use a smaller root font size, and have the modular scale be 1.25 (instead of 1.5) */
+
+@media screen and (max-width: 600px) {
+    html {
+        font-size: 16px;
+    }
+
+    h2 {
+        font-size: 20px; /* 16 x 1.25 */
+    }
+
+    h1 {
+        font-size: 25px; /* 16 x 1.25 x 1.25 */
+    }
+}
+
+/* Guess what? We now know the maximum and minimum font sizes for h1-, h2- and p-elements,
+and we have set up one of our media queries. Let's set up the media query for
+intermediate screen sizes, and apply the equation from earlier to h1, h2, and p. */
+
+@media screen and (min-width: 600px) and (max-width: 900px) {
+    html {
+        font-size: calc(16px + (26 - 16) * (100vw - 600px) / (900 - 600));
+    }
+
+    h2 {
+        font-size: calc(20px + (39 - 20) * (100vw - 600px) / (900 - 600));
+    }
+
+    h1 {
+        font-size: calc(25px + (58.5 - 25) * (100vw - 600px) / (900 - 600));
+    }
+}
+
+
+/* USING REM, EM, AND VIEWPORT UNITS **************************************************************** */
+
+.choosing-units {
+    background: #eeebcc;
+}
+
+/* rem equals the size of the base font. If the base font is 16px, 1rem = 16px. */
+
+/* em equals the font size of the current element (which can be inherited from a parent).
+If you're currently styling h2, and the font size of h2 is 20px, then 1em = 20px. */
+
+/* In the previous section we set up all fonts respond fluidly to viewport width.
+This means that any measurement we set in rem or em will respond fluidly as well. */
+
+/* remember! this is in addition to the viewport units we covered earlier,
+which are also fluid by default.*/
+
+/* But with so much fluidity at our disposal, how do we choose the units? */
+
+/* Line height should usually be proportional to the font size of the current element,
+so I recommend em-units in almost every case. */
+
+.choosing-units p {
+    line-height: 1.5em;
+}
+
+/* Top and bottom margin/padding is often best kept regular,
+so I would often recommend rem units (although there's a lot of exceptions). */
+
+.choosing-units h2 {
+    margin: 0;
+    padding: 3rem 0 1rem;
+}
+
+.choosing-units h1 {
+    margin: 0;
+    padding: 1rem 0;
+}
+
+.choosing-units p {
+    margin: 0;
+    padding: 0;
+}
+
+/* For side margin and padding, here is the thing:
+a comfortable line length for the web is often 50 to 75 characters.
+This means that, if your site has blocks of text, you want:
+- on large screens: wide empty space on the sides, so lines don't get too long.
+- on small screens: narrow empty space on the sides, so lines don't get too short. */
+
+/* But good news! The fluid sizing we learned in the first section can be applied
+not just to font sizes, but to anything you want! */
+
+/* So here is my exercise for you:
+- try setting the side padding of the <div class="choosing-units"> -element
+to a certain maximum on large viewports and a certain minimum on small viewports
+- make it transition fluidly as you resize in between.  */
+
+
+
+
+
+
+
+
+
+
+
+
