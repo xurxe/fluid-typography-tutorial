@@ -6,7 +6,7 @@ Please note: the explanations are included as comments in the CSS file.
 
 ## Demo
 
-Coming soon.
+[https://xurxe.github.io/fluid-typography-tutorial/](https://xurxe.github.io/fluid-typography-tutorial/)
 
 ## Author
 
